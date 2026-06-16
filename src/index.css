@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, monospace;
+  --color-primary: #0A0E17;
+  --color-secondary: #0B1120;
+  --color-card: #131A2A;
+  --color-accent-cyan: #00F0FF;
+  --color-accent-purple: #8B5CF6;
+  --color-slate-muted: #94A3B8;
+  --color-slate-deep: #64748B;
+}
+
+@layer base {
+  body {
+    @apply bg-primary text-white font-sans antialiased selection:bg-accent-cyan/30;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl rounded-[24px] transition-all duration-300;
+  }
+  
+  .glass-card-large {
+    @apply bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl rounded-[32px] transition-all duration-300;
+  }
+  
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center px-7 py-3 overflow-hidden font-bold text-black transition duration-300 ease-out rounded-full shadow-[0_0_25px_rgba(0,240,255,0.4)] hover:scale-105 active:scale-95;
+    background: linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-purple));
+  }
+  
+  .btn-secondary {
+    @apply px-7 py-3 border border-white/20 rounded-full font-medium transition-all duration-200 hover:border-accent-cyan active:scale-95 text-slate-muted hover:text-white;
+  }
+
+  .text-glow-cyan {
+    text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+  }
+}
+
+.bg-grid {
+  background-size: 40px 40px;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+}

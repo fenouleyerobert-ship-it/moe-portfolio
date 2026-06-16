@@ -1,0 +1,6 @@
+{
+  "name": "Remix: Remix: Дмитрий Родионов | Портфолио",
+  "description": "Разработка AI-агентов и автоматизация бизнеса с помощью Google AI Studio и Gemini API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
