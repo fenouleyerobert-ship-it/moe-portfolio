@@ -107,7 +107,10 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const [logs, setLogs] = useState<string[]>([]);
-  const addLog = (msg: string) => setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${msg}`]);
+  const addLog = (msg: string) => {
+    console.log("Log:", msg);
+    setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${msg}`]);
+  };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -533,12 +536,6 @@ export default function App() {
                   </div>
                 )}
 
-                {logs.length > 0 && (
-                  <div className="mt-4 p-4 bg-black/50 rounded-2xl border border-white/10 text-xs text-slate-300 font-mono space-y-1 max-h-40 overflow-y-auto">
-                    {logs.map((log, i) => <div key={i}>{log}</div>)}
-                  </div>
-                )}
-
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
@@ -547,6 +544,12 @@ export default function App() {
                   {isSubmitting ? 'Отправка...' : 'Отправить заявку →'}
                 </button>
               </form>
+              
+              {logs.length > 0 && (
+                <div className="mt-4 p-4 bg-red-900/50 rounded-2xl border-4 border-red-500 text-xs text-white font-mono space-y-1 max-h-40 overflow-y-auto z-[1000] relative">
+                  {logs.map((log, i) => <div key={i}>{log}</div>)}
+                </div>
+              )}
             </div>
           </div>
         </div>
