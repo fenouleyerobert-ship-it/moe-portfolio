@@ -6,6 +6,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function startServer() {
+  console.log("Starting server...");
+  console.log("TELEGRAM_BOT_TOKEN set:", !!process.env.TELEGRAM_BOT_TOKEN);
+  console.log("TELEGRAM_CHAT_ID set:", !!process.env.TELEGRAM_CHAT_ID);
+  
   const app = express();
   const PORT = 3000;
 
@@ -13,9 +17,11 @@ async function startServer() {
 
   // API route
   app.post("/api/contact", async (req, res) => {
+    console.log("Received contact form request:", req.body);
     const { name, contact, task } = req.body;
 
     if (!name || !contact) {
+      console.log("Missing fields in request");
       return res.status(400).json({ status: "error", message: "Missing fields" });
     }
 
@@ -24,16 +30,20 @@ async function startServer() {
     try {
       // 2. Send to Telegram
       if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+        console.log("Attempting to send to Telegram...");
         await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: process.env.TELEGRAM_CHAT_ID,
           text: message
         });
+        console.log("Message sent to Telegram successfully");
+      } else {
+        console.log("Telegram credentials missing, skipping telegram notification");
       }
 
       res.json({ status: "success", message: "Заявка успешно отправлена!" });
     } catch (error) {
       console.error("Error sending contact message:", error);
-      res.status(500).json({ status: "error", message: "Ошибка отправки" });
+      res.status(500).json({ status: "error", message: "Ошибка отправки: " + (error instanceof Error ? error.message : 'Unknown error') });
     }
   });
 
