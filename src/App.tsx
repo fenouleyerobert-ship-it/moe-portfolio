@@ -106,20 +106,27 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  const [logs, setLogs] = useState<string[]>([]);
+  const addLog = (msg: string) => setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${msg}`]);
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    addLog("Форма отправлена");
     if (!formData.name || formData.name.length < 2) {
+      addLog("Ошибка: Минимум 2 символа в имени");
       setFormStatus({ type: 'error', message: 'Минимум 2 символа в имени' });
       return;
     }
     
     const contactValid = formData.contact.includes('@') || /^\+?[0-9]{5,}$/.test(formData.contact.replace(/\s/g, ''));
     if (!formData.contact || !contactValid) {
+      addLog("Ошибка: Некорректный контакт");
       setFormStatus({ type: 'error', message: 'Введите корректный TG, телефон или email' });
       return;
     }
 
     setIsSubmitting(true);
+    addLog("Отправка запроса на сервер...");
 
     try {
       const response = await fetch('/api/contact', {
@@ -131,15 +138,19 @@ export default function App() {
       const data = await response.json();
 
       if (response.ok) {
+        addLog("Успех: Заявка отправлена");
         setFormStatus({ type: 'success', message: '✅ Заявка отправлена! Я свяжусь с вами в ближайшее время.' });
         setFormData({ name: '', contact: '', task: '' });
       } else {
+        addLog(`Ошибка сервера: ${data.message || 'Неизвестная ошибка'}`);
         throw new Error(data.message || 'Ошибка отправки');
       }
     } catch (error) {
+      addLog(`Ошибка: ${error instanceof Error ? error.message : 'Ошибка при отправке'}`);
       setFormStatus({ type: 'error', message: 'Ошибка при отправке. Попробуйте еще раз.' });
     } finally {
       setIsSubmitting(false);
+      addLog("Отправка завершена");
     }
   };
 
@@ -519,6 +530,12 @@ export default function App() {
                 {formStatus.message && (
                   <div className={`text-sm font-semibold ${formStatus.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
                     {formStatus.message}
+                  </div>
+                )}
+
+                {logs.length > 0 && (
+                  <div className="mt-4 p-4 bg-black/50 rounded-2xl border border-white/10 text-xs text-slate-300 font-mono space-y-1 max-h-40 overflow-y-auto">
+                    {logs.map((log, i) => <div key={i}>{log}</div>)}
                   </div>
                 )}
 
